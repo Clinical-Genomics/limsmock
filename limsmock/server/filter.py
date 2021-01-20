@@ -1,5 +1,6 @@
 from pathlib import Path
 import xml.etree.ElementTree as ET
+import requests
 
 
 class Filter:
@@ -10,9 +11,9 @@ class Filter:
         self.entity_type = entity_type
         self.base_uri = base_uri
         self.udf_tag = '{http://genologics.com/ri/userdefined}field'
-        self.related_entity_tags = ['project', 'submitter', 'artifact']  # handlde these
+        self.related_entity_tags = ['project', 'submitter', 'artifact', 'reagent-label']  # handlde these
 
-    def _filter(self, root):
+    def _parse(self, root):
         parsed_xml = []
         for child in root.iter():
             if child.tag == self.udf_tag:
@@ -22,8 +23,19 @@ class Filter:
                 continue
             elif child.tag == 'input':
                 parsed_xml.append(('inputartifactlimsid', child.attrib.get('limsid')))
+            elif child.tag == 'parent-process':
+                uri = child.attrib.get('uri')
+                r = requests.get(uri)
+                tree = ET.fromstring(r.content)
+                parsed_xml.append(('process-type', tree.findall('type')[0].text))
+            elif child.tag == 'sample':
+                parsed_xml.append(('samplelimsid', child.attrib.get('limsid')))
             else:
                 parsed_xml.append((child.tag, child.text))
+        return parsed_xml
+
+    def _filter(self, root):
+        parsed_xml = self._parse(root)
         if set(self.params) <= set(parsed_xml):
             return True
         return False
@@ -32,8 +44,6 @@ class Filter:
         entitiy_xml = [
             f'<smp:{self.entity_type["plur"]} xmlns:smp="http://genologics.com/ri/{self.entity_type["sing"]}">']
         for file in self.file_path.glob('*.xml'):
-            print(file)
-
             entity_id = file.stem
             tree = ET.parse(file)
             root = tree.getroot()
