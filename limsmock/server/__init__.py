@@ -1,21 +1,37 @@
 import uvicorn
 from limsmock.server.filter import Filter
 from fastapi import FastAPI, Response, Request
+from pathlib import Path
 
 app = FastAPI()
 PORT = 8000
 HOST = '127.0.0.1'
 BASEURI = f'http://{HOST}:{PORT}'
 
+
+def build_db(file_path):
+    db = {}
+    entities = ['samples', 'processes', 'artifacts']
+    for entity in entities:
+        entity_path = Path(f"{file_path}/{entity}")
+        db[entity] = {}
+        for file in entity_path.glob('*.xml'):
+            entity_id = file.stem
+            f = open(file, 'r')
+            db[entity][entity_id] = f.read()
+            f.close()
+    return db
+
+
 def run_server(file_path):
     app.file_path = file_path
+    app.db = build_db(file_path)
     uvicorn.run(app, host=HOST, port=PORT)
 
 
 @app.get("/api/v2/samples")
-def samples(request: Request):
-    entity_type = {'sing':'sample', 'plur':'samples'}
-
+def get_samples(request: Request):
+    entity_type = {'sing': 'sample', 'plur': 'samples'}
 
     params = request.query_params.multi_items()
     test_path = f"{request.app.file_path}/{entity_type['plur']}/"
@@ -26,16 +42,21 @@ def samples(request: Request):
 
 
 @app.get("/api/v2/samples/{enity_id}")
-def sample(enity_id, request: Request):
-    test_path = request.app.file_path
+def get_sample(enity_id, request: Request):
+    db = request.app.db
 
-    f = open(f"{test_path}/samples/{enity_id}.xml", 'r')
+    return Response(content=db['samples'].get(enity_id))
 
-    return Response(content=f.read())
+
+@app.put("/api/v2/samples/{enity_id}")
+async def put_sample(enity_id, request: Request):
+    body = await request.body()
+    request.app.db['samples'][enity_id] = body
+    return Response(content=body)
 
 
 @app.get("/api/v2/processes")
-def processes(request: Request):
+def get_processes(request: Request):
     entity_type = {'sing': 'process', 'plur': 'processes'}
 
     params = request.query_params.multi_items()
@@ -47,16 +68,14 @@ def processes(request: Request):
 
 
 @app.get("/api/v2/processes/{enity_id}")
-def process(enity_id, request: Request):
-    test_path = request.app.file_path
+def get_process(enity_id, request: Request):
+    db = request.app.db
 
-    f = open(f"{test_path}/processes/{enity_id}.xml", 'r')
-
-    return Response(content=f.read())
+    return Response(content=db['processes'].get(enity_id))
 
 
 @app.get("/api/v2/containers")
-def containers(request: Request):
+def get_containers(request: Request):
     entity_type = {'sing': 'container', 'plur': 'containers'}
 
     params = request.query_params.multi_items()
@@ -68,16 +87,14 @@ def containers(request: Request):
 
 
 @app.get("/api/v2/containers/{enity_id}")
-def container(enity_id, request: Request):
-    test_path = request.app.file_path
+def get_container(enity_id, request: Request):
+    db = request.app.db
 
-    f = open(f"{test_path}/containers/{enity_id}.xml", 'r')
-
-    return Response(content=f.read())
+    return Response(content=db['containers'].get(enity_id))
 
 
 @app.get("/api/v2/containertypes")
-def containertypes(request: Request):
+def get_containertypes(request: Request):
     entity_type = {'sing': 'containertype', 'plur': 'containertypes'}
 
     params = request.query_params.multi_items()
@@ -89,16 +106,14 @@ def containertypes(request: Request):
 
 
 @app.get("/api/v2/containertypes/{enity_id}")
-def containertype(enity_id, request: Request):
-    test_path = request.app.file_path
+def get_containertype(enity_id, request: Request):
+    db = request.app.db
 
-    f = open(f"{test_path}/containertypes/{enity_id}.xml", 'r')
-
-    return Response(content=f.read())
+    return Response(content=db['containertypes'].get(enity_id))
 
 
 @app.get("/api/v2/controltypes")
-def controltypes(request: Request):
+def get_controltypes(request: Request):
     entity_type = {'sing': 'controltype', 'plur': 'controltypes'}
 
     params = request.query_params.multi_items()
@@ -110,16 +125,14 @@ def controltypes(request: Request):
 
 
 @app.get("/api/v2/controltypes/{enity_id}")
-def controltype(enity_id, request: Request):
-    test_path = request.app.file_path
+def get_controltype(enity_id, request: Request):
+    db = request.app.db
 
-    f = open(f"{test_path}/controltypes/{enity_id}.xml", 'r')
-
-    return Response(content=f.read())
+    return Response(content=db['controltypes'].get(enity_id))
 
 
 @app.get("/api/v2/files")
-def files(request: Request):
+def get_files(request: Request):
     entity_type = {'sing': 'file', 'plur': 'files'}
 
     params = request.query_params.multi_items()
@@ -131,16 +144,14 @@ def files(request: Request):
 
 
 @app.get("/api/v2/files/{enity_id}")
-def file(enity_id, request: Request):
-    test_path = request.app.file_path
+def get_file(enity_id, request: Request):
+    db = request.app.db
 
-    f = open(f"{test_path}/files/{enity_id}.xml", 'r')
-
-    return Response(content=f.read())
+    return Response(content=db['files'].get(enity_id))
 
 
 @app.get("/api/v2/instruments")
-def instruments(request: Request):
+def get_instruments(request: Request):
     entity_type = {'sing': 'instrument', 'plur': 'instruments'}
 
     params = request.query_params.multi_items()
@@ -152,16 +163,14 @@ def instruments(request: Request):
 
 
 @app.get("/api/v2/instruments/{enity_id}")
-def instrument(enity_id, request: Request):
-    test_path = request.app.file_path
+def get_instrument(enity_id, request: Request):
+    db = request.app.db
 
-    f = open(f"{test_path}/instruments/{enity_id}.xml", 'r')
-
-    return Response(content=f.read())
+    return Response(content=db['instruments'].get(enity_id))
 
 
 @app.get("/api/v2/labs")
-def labs(request: Request):
+def get_labs(request: Request):
     entity_type = {'sing': 'lab', 'plur': 'labs'}
 
     params = request.query_params.multi_items()
@@ -173,16 +182,14 @@ def labs(request: Request):
 
 
 @app.get("/api/v2/labs/{enity_id}")
-def lab(enity_id, request: Request):
-    test_path = request.app.file_path
+def get_lab(enity_id, request: Request):
+    db = request.app.db
 
-    f = open(f"{test_path}/labs/{enity_id}.xml", 'r')
-
-    return Response(content=f.read())
+    return Response(content=db['labs'].get(enity_id))
 
 
 @app.get("/api/v2/permissions")
-def permissions(request: Request):
+def get_permissions(request: Request):
     entity_type = {'sing': 'permission', 'plur': 'permissions'}
 
     params = request.query_params.multi_items()
@@ -194,16 +201,14 @@ def permissions(request: Request):
 
 
 @app.get("/api/v2/permissions/{enity_id}")
-def permission(enity_id, request: Request):
-    test_path = request.app.file_path
+def get_permission(enity_id, request: Request):
+    db = request.app.db
 
-    f = open(f"{test_path}/permissions/{enity_id}.xml", 'r')
-
-    return Response(content=f.read())
+    return Response(content=db['permissions'].get(enity_id))
 
 
 @app.get("/api/v2/processtemplates")
-def processtemplates(request: Request):
+def get_processtemplates(request: Request):
     entity_type = {'sing': 'processtemplate', 'plur': 'processtemplates'}
 
     params = request.query_params.multi_items()
@@ -215,16 +220,14 @@ def processtemplates(request: Request):
 
 
 @app.get("/api/v2/processtemplates/{enity_id}")
-def processtemplate(enity_id, request: Request):
-    test_path = request.app.file_path
+def get_processtemplate(enity_id, request: Request):
+    db = request.app.db
 
-    f = open(f"{test_path}/processtemplates/{enity_id}.xml", 'r')
-
-    return Response(content=f.read())
+    return Response(content=db['processtemplates'].get(enity_id))
 
 
 @app.get("/api/v2/processtypes")
-def processtypes(request: Request):
+def get_processtypes(request: Request):
     entity_type = {'sing': 'processtype', 'plur': 'processtypes'}
 
     params = request.query_params.multi_items()
@@ -236,16 +239,14 @@ def processtypes(request: Request):
 
 
 @app.get("/api/v2/processtypes/{enity_id}")
-def processtype(enity_id, request: Request):
-    test_path = request.app.file_path
+def get_processtype(enity_id, request: Request):
+    db = request.app.db
 
-    f = open(f"{test_path}/processtypes/{enity_id}.xml", 'r')
-
-    return Response(content=f.read())
+    return Response(content=db['processtypes'].get(enity_id))
 
 
 @app.get("/api/v2/projects")
-def projects(request: Request):
+def get_projects(request: Request):
     entity_type = {'sing': 'project', 'plur': 'projects'}
 
     params = request.query_params.multi_items()
@@ -257,16 +258,14 @@ def projects(request: Request):
 
 
 @app.get("/api/v2/projects/{enity_id}")
-def project(enity_id, request: Request):
-    test_path = request.app.file_path
+def get_project(enity_id, request: Request):
+    db = request.app.db
 
-    f = open(f"{test_path}/projects/{enity_id}.xml", 'r')
-
-    return Response(content=f.read())
+    return Response(content=db['projects'].get(enity_id))
 
 
 @app.get("/api/v2/reagentkits")
-def reagentkits(request: Request):
+def get_reagentkits(request: Request):
     entity_type = {'sing': 'reagentkit', 'plur': 'reagentkits'}
 
     params = request.query_params.multi_items()
@@ -278,16 +277,14 @@ def reagentkits(request: Request):
 
 
 @app.get("/api/v2/reagentkits/{enity_id}")
-def reagentkit(enity_id, request: Request):
-    test_path = request.app.file_path
+def get_reagentkit(enity_id, request: Request):
+    db = request.app.db
 
-    f = open(f"{test_path}/reagentkits/{enity_id}.xml", 'r')
-
-    return Response(content=f.read())
+    return Response(content=db['reagentkits'].get(enity_id))
 
 
 @app.get("/api/v2/reagentlots")
-def reagentlots(request: Request):
+def get_reagentlots(request: Request):
     entity_type = {'sing': 'reagentlot', 'plur': 'reagentlots'}
 
     params = request.query_params.multi_items()
@@ -299,16 +296,14 @@ def reagentlots(request: Request):
 
 
 @app.get("/api/v2/reagentlots/{enity_id}")
-def reagentlot(enity_id, request: Request):
-    test_path = request.app.file_path
+def get_reagentlot(enity_id, request: Request):
+    db = request.app.db
 
-    f = open(f"{test_path}/reagentlots/{enity_id}.xml", 'r')
-
-    return Response(content=f.read())
+    return Response(content=db['reagentlots'].get(enity_id))
 
 
 @app.get("/api/v2/reagenttypes")
-def reagenttypes(request: Request):
+def get_reagenttypes(request: Request):
     entity_type = {'sing': 'reagenttype', 'plur': 'reagenttypes'}
 
     params = request.query_params.multi_items()
@@ -320,16 +315,14 @@ def reagenttypes(request: Request):
 
 
 @app.get("/api/v2/reagenttypes/{enity_id}")
-def reagenttype(enity_id, request: Request):
-    test_path = request.app.file_path
+def get_reagenttype(enity_id, request: Request):
+    db = request.app.db
 
-    f = open(f"{test_path}/reagenttypes/{enity_id}.xml", 'r')
-
-    return Response(content=f.read())
+    return Response(content=db['reagenttypes'].get(enity_id))
 
 
 @app.get("/api/v2/researchers")
-def researchers(request: Request):
+def get_researchers(request: Request):
     entity_type = {'sing': 'researcher', 'plur': 'researchers'}
 
     params = request.query_params.multi_items()
@@ -341,16 +334,14 @@ def researchers(request: Request):
 
 
 @app.get("/api/v2/researchers/{enity_id}")
-def researcher(enity_id, request: Request):
-    test_path = request.app.file_path
+def get_researcher(enity_id, request: Request):
+    db = request.app.db
 
-    f = open(f"{test_path}/researchers/{enity_id}.xml", 'r')
-
-    return Response(content=f.read())
+    return Response(content=db['researchers'].get(enity_id))
 
 
 @app.get("/api/v2/roles")
-def roles(request: Request):
+def get_roles(request: Request):
     entity_type = {'sing': 'role', 'plur': 'roles'}
 
     params = request.query_params.multi_items()
@@ -362,16 +353,14 @@ def roles(request: Request):
 
 
 @app.get("/api/v2/roles/{enity_id}")
-def role(enity_id, request: Request):
-    test_path = request.app.file_path
+def get_role(enity_id, request: Request):
+    db = request.app.db
 
-    f = open(f"{test_path}/roles/{enity_id}.xml", 'r')
-
-    return Response(content=f.read())
+    return Response(content=db['roles'].get(enity_id))
 
 
 @app.get("/api/v2/artifacts")
-def artifacts(request: Request):
+def get_artifacts(request: Request):
     entity_type = {'sing': 'artifact', 'plur': 'artifacts'}
 
     params = request.query_params.multi_items()
@@ -383,16 +372,21 @@ def artifacts(request: Request):
 
 
 @app.get("/api/v2/artifacts/{enity_id}")
-def artifact(enity_id, request: Request):
-    test_path = request.app.file_path
+def get_artifact(enity_id, request: Request):
+    db = request.app.db
 
-    f = open(f"{test_path}/artifacts/{enity_id}.xml", 'r')
+    return Response(content=db['artifacts'].get(enity_id))
 
-    return Response(content=f.read())
+
+@app.put("/api/v2/artifacts/{enity_id}")
+async def put_artifact(enity_id, request: Request):
+    body = await request.body()
+    request.app.db['artifacts'][enity_id] = body
+    return Response(content=body)
 
 
 @app.get("/api/v2/artifactgroups")
-def artifactgroups(request: Request):
+def get_artifactgroups(request: Request):
     entity_type = {'sing': 'artifactgroup', 'plur': 'artifactgroups'}
 
     params = request.query_params.multi_items()
@@ -404,16 +398,14 @@ def artifactgroups(request: Request):
 
 
 @app.get("/api/v2/artifactgroups/{enity_id}")
-def artifactgroup(enity_id, request: Request):
-    test_path = request.app.file_path
+def get_artifactgroup(enity_id, request: Request):
+    db = request.app.db
 
-    f = open(f"{test_path}/artifactgroups/{enity_id}.xml", 'r')
-
-    return Response(content=f.read())
+    return Response(content=db['artifactgroups'].get(enity_id))
 
 
 @app.get("/api/v2/automations")
-def automations(request: Request):
+def get_automations(request: Request):
     entity_type = {'sing': 'automation', 'plur': 'automations'}
 
     params = request.query_params.multi_items()
@@ -425,16 +417,14 @@ def automations(request: Request):
 
 
 @app.get("/api/v2/configuration/automations/{enity_id}")
-def automation(enity_id, request: Request):
-    test_path = request.app.file_path
+def get_automation(enity_id, request: Request):
+    db = request.app.db
 
-    f = open(f"{test_path}/automations/{enity_id}.xml", 'r')
-
-    return Response(content=f.read())
+    return Response(content=db['automations'].get(enity_id))
 
 
 @app.get("/api/v2/protocols")
-def protocols(request: Request):
+def get_protocols(request: Request):
     entity_type = {'sing': 'protocol', 'plur': 'protocols'}
 
     params = request.query_params.multi_items()
@@ -446,16 +436,14 @@ def protocols(request: Request):
 
 
 @app.get("/api/v2/configuration/protocols/{enity_id}")
-def protocol(enity_id, request: Request):
-    test_path = request.app.file_path
+def get_protocol(enity_id, request: Request):
+    db = request.app.db
 
-    f = open(f"{test_path}/protocols/{enity_id}.xml", 'r')
-
-    return Response(content=f.read())
+    return Response(content=db['protocols'].get(enity_id))
 
 
 @app.get("/api/v2/udfs")
-def udfs(request: Request):
+def get_udfs(request: Request):
     entity_type = {'sing': 'udf', 'plur': 'udfs'}
 
     params = request.query_params.multi_items()
@@ -467,16 +455,14 @@ def udfs(request: Request):
 
 
 @app.get("/api/v2/configuration/udfs/{enity_id}")
-def udf(enity_id, request: Request):
-    test_path = request.app.file_path
+def get_udf(enity_id, request: Request):
+    db = request.app.db
 
-    f = open(f"{test_path}/udfs/{enity_id}.xml", 'r')
-
-    return Response(content=f.read())
+    return Response(content=db['udfs'].get(enity_id))
 
 
 @app.get("/api/v2/udts")
-def udts(request: Request):
+def get_udts(request: Request):
     entity_type = {'sing': 'udt', 'plur': 'udts'}
 
     params = request.query_params.multi_items()
@@ -488,16 +474,14 @@ def udts(request: Request):
 
 
 @app.get("/api/v2/configuration/udts/{enity_id}")
-def udt(enity_id, request: Request):
-    test_path = request.app.file_path
+def get_udt(enity_id, request: Request):
+    db = request.app.db
 
-    f = open(f"{test_path}/udts/{enity_id}.xml", 'r')
-
-    return Response(content=f.read())
+    return Response(content=db['udts'].get(enity_id))
 
 
 @app.get("/api/v2/workflows")
-def workflows(request: Request):
+def get_workflows(request: Request):
     entity_type = {'sing': 'workflow', 'plur': 'workflows'}
 
     params = request.query_params.multi_items()
@@ -509,9 +493,7 @@ def workflows(request: Request):
 
 
 @app.get("/api/v2/configuration/workflows/{enity_id}")
-def workflow(enity_id, request: Request):
-    test_path = request.app.file_path
+def get_workflow(enity_id, request: Request):
+    db = request.app.db
 
-    f = open(f"{test_path}/workflows/{enity_id}.xml", 'r')
-
-    return Response(content=f.read())
+    return Response(content=db['workflows'].get(enity_id))
