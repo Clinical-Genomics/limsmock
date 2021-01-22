@@ -2,14 +2,13 @@ import uvicorn
 from limsmock.filter import Filter
 from fastapi import FastAPI, Response, Request
 from limsmock.store import build_db
+
 app = FastAPI()
 
 
-
-
-
 def run_server(file_path: str, host: str, port: str) -> None:
-    """"""
+    """Starting up the server. This is the function that needs
+    to be imported and used in the server fixure for your test"""
 
     app.file_path = file_path
     app.db = build_db(file_path)
