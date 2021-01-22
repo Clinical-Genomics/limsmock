@@ -4,12 +4,10 @@ import requests
 
 
 class Filter:
+
     # remaining is to handle unioon of combinations when many process types or inputs are given
-    def __init__(self, file_path: str, params: list, entity_type: dict, base_uri: str):
-        self.file_path = Path(file_path)
+    def __init__(self, params: list):
         self.params = params
-        self.entity_type = entity_type
-        self.base_uri = base_uri
         self.udf_tag = '{http://genologics.com/ri/userdefined}field'
         self.related_entity_tags = ['project', 'submitter', 'artifact', 'reagent-label']  # handlde these
 
@@ -18,7 +16,7 @@ class Filter:
         for child in root.iter():
             if child.tag == self.udf_tag:
                 udf = child.attrib.get('name')
-                parsed_xml.append( (f"udf.{udf}", child.text) )
+                parsed_xml.append((f"udf.{udf}", child.text))
             elif child.tag in self.related_entity_tags:
                 continue
             elif child.tag == 'input':
@@ -26,6 +24,9 @@ class Filter:
             elif child.tag == 'parent-process':
                 uri = child.attrib.get('uri')
                 r = requests.get(uri)
+                if not r.content:
+                    # warn about missing process file??
+                    continue
                 tree = ET.fromstring(r.content)
                 parsed_xml.append(('process-type', tree.findall('type')[0].text))
             elif child.tag == 'sample':
@@ -40,15 +41,28 @@ class Filter:
             return True
         return False
 
-    def make_entity_xml(self):
+    def make_entity_xml(self, entity_type: dict, base_uri: str, db: dict) -> str:
+        """Foramting the entity xml responce based existing enteties in the database.
+
+        Example of entity xml for artifacts:
+
+        <art:artifacts xmlns:art="http://genologics.com/ri/artifact">
+        <artifact limsid="2-1000001" uri="http://127.0.0.1:8000/api/v2/artifacts/2-1000001"/>
+        <artifact limsid="2-1000002" uri="http://127.0.0.1:8000/api/v2/artifacts/2-1000002"/>
+        <artifact limsid="2-1000003" uri="http://127.0.0.1:8000/api/v2/artifacts/2-1000003"/>
+        <artifact limsid="2-1000004" uri="http://127.0.0.1:8000/api/v2/artifacts/2-1000004"/>
+        </art:artifacts>
+        """
+
         entitiy_xml = [
-            f'<smp:{self.entity_type["plur"]} xmlns:smp="http://genologics.com/ri/{self.entity_type["sing"]}">']
-        for file in self.file_path.glob('*.xml'):
-            entity_id = file.stem
-            tree = ET.parse(file)
-            root = tree.getroot()
+            f'<smp:{entity_type["plur"]} xmlns:smp="http://genologics.com/ri/{entity_type["sing"]}">']
+
+        for entity_id, xml_content in db[entity_type["plur"]].items():
+            root = ET.fromstring(xml_content)
             if self._filter(root):
-                path = f'<{self.entity_type["sing"]} uri="{self.base_uri}/api/v2/{self.entity_type["plur"]}/{entity_id}" limsid="{entity_id}"/>'
+                path = f'<{entity_type["sing"]} uri="{base_uri}/api/v2/{entity_type["plur"]}/{entity_id}" limsid="{entity_id}"/>'
                 entitiy_xml.append(path)
-        entitiy_xml.append(f'</smp:{self.entity_type["plur"]}>')
+
+        entitiy_xml.append(f'</smp:{entity_type["plur"]}>')
+
         return '\n'.join(entitiy_xml)

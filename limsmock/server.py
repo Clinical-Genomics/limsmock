@@ -10,7 +10,6 @@ def run_server(file_path: str, host: str, port: str) -> None:
     """Starting up the server. This is the function that needs
     to be imported and used in the server fixure for your test"""
 
-    app.file_path = file_path
     app.db = build_db(file_path)
     app.baseuri = f'http://{host}:{port}'
     uvicorn.run(app, host=host, port=port)
@@ -21,9 +20,9 @@ def get_samples(request: Request):
     entity_type = {'sing': 'sample', 'plur': 'samples'}
 
     params = request.query_params.multi_items()
-    test_path = f"{request.app.file_path}/{entity_type['plur']}/"
-    filter = Filter(file_path=test_path, params=params, entity_type=entity_type, base_uri=BASEURI)
-    xml = filter.make_entity_xml()
+
+    filter = Filter(params=params)
+    xml = filter.make_entity_xml(db=request.app.db, entity_type=entity_type, base_uri=request.app.baseuri)
 
     return Response(content=xml)
 
@@ -48,10 +47,8 @@ def get_processes(request: Request):
     entity_type = {'sing': 'process', 'plur': 'processes'}
 
     params = request.query_params.multi_items()
-    test_path = f"{request.app.file_path}/{entity_type['plur']}/"
-    filter = Filter(file_path=test_path, params=params, entity_type=entity_type, base_uri=request.app.baseuri)
-    xml = filter.make_entity_xml()
-
+    filter = Filter(params=params)
+    xml = filter.make_entity_xml(db=request.app.db, entity_type=entity_type, base_uri=request.app.baseuri)
     return Response(content=xml)
 
 
@@ -75,9 +72,9 @@ def get_containers(request: Request):
     entity_type = {'sing': 'container', 'plur': 'containers'}
 
     params = request.query_params.multi_items()
-    test_path = f"{request.app.file_path}/{entity_type['plur']}/"
-    filter = Filter(file_path=test_path, params=params, entity_type=entity_type, base_uri=request.app.baseuri)
-    xml = filter.make_entity_xml()
+
+    filter = Filter(params=params)
+    xml = filter.make_entity_xml(db=request.app.db, entity_type=entity_type, base_uri=request.app.baseuri)
 
     return Response(content=xml)
 
@@ -102,9 +99,9 @@ def get_containertypes(request: Request):
     entity_type = {'sing': 'containertype', 'plur': 'containertypes'}
 
     params = request.query_params.multi_items()
-    test_path = f"{request.app.file_path}/{entity_type['plur']}/"
-    filter = Filter(file_path=test_path, params=params, entity_type=entity_type, base_uri=request.app.baseuri)
-    xml = filter.make_entity_xml()
+
+    filter = Filter(params=params)
+    xml = filter.make_entity_xml(db=request.app.db, entity_type=entity_type, base_uri=request.app.baseuri)
 
     return Response(content=xml)
 
@@ -129,9 +126,9 @@ def get_controltypes(request: Request):
     entity_type = {'sing': 'controltype', 'plur': 'controltypes'}
 
     params = request.query_params.multi_items()
-    test_path = f"{request.app.file_path}/{entity_type['plur']}/"
-    filter = Filter(file_path=test_path, params=params, entity_type=entity_type, base_uri=request.app.baseuri)
-    xml = filter.make_entity_xml()
+
+    filter = Filter(params=params)
+    xml = filter.make_entity_xml(db=request.app.db, entity_type=entity_type, base_uri=request.app.baseuri)
 
     return Response(content=xml)
 
@@ -156,9 +153,9 @@ def get_files(request: Request):
     entity_type = {'sing': 'file', 'plur': 'files'}
 
     params = request.query_params.multi_items()
-    test_path = f"{request.app.file_path}/{entity_type['plur']}/"
-    filter = Filter(file_path=test_path, params=params, entity_type=entity_type, base_uri=request.app.baseuri)
-    xml = filter.make_entity_xml()
+
+    filter = Filter(params=params)
+    xml = filter.make_entity_xml(db=request.app.db, entity_type=entity_type, base_uri=request.app.baseuri)
 
     return Response(content=xml)
 
@@ -183,9 +180,9 @@ def get_instruments(request: Request):
     entity_type = {'sing': 'instrument', 'plur': 'instruments'}
 
     params = request.query_params.multi_items()
-    test_path = f"{request.app.file_path}/{entity_type['plur']}/"
-    filter = Filter(file_path=test_path, params=params, entity_type=entity_type, base_uri=request.app.baseuri)
-    xml = filter.make_entity_xml()
+
+    filter = Filter(params=params)
+    xml = filter.make_entity_xml(db=request.app.db, entity_type=entity_type, base_uri=request.app.baseuri)
 
     return Response(content=xml)
 
@@ -210,9 +207,9 @@ def get_labs(request: Request):
     entity_type = {'sing': 'lab', 'plur': 'labs'}
 
     params = request.query_params.multi_items()
-    test_path = f"{request.app.file_path}/{entity_type['plur']}/"
-    filter = Filter(file_path=test_path, params=params, entity_type=entity_type, base_uri=request.app.baseuri)
-    xml = filter.make_entity_xml()
+
+    filter = Filter(params=params)
+    xml = filter.make_entity_xml(db=request.app.db, entity_type=entity_type, base_uri=request.app.baseuri)
 
     return Response(content=xml)
 
@@ -237,9 +234,9 @@ def get_permissions(request: Request):
     entity_type = {'sing': 'permission', 'plur': 'permissions'}
 
     params = request.query_params.multi_items()
-    test_path = f"{request.app.file_path}/{entity_type['plur']}/"
-    filter = Filter(file_path=test_path, params=params, entity_type=entity_type, base_uri=request.app.baseuri)
-    xml = filter.make_entity_xml()
+
+    filter = Filter(params=params)
+    xml = filter.make_entity_xml(db=request.app.db, entity_type=entity_type, base_uri=request.app.baseuri)
 
     return Response(content=xml)
 
@@ -264,9 +261,9 @@ def get_processtemplates(request: Request):
     entity_type = {'sing': 'processtemplate', 'plur': 'processtemplates'}
 
     params = request.query_params.multi_items()
-    test_path = f"{request.app.file_path}/{entity_type['plur']}/"
-    filter = Filter(file_path=test_path, params=params, entity_type=entity_type, base_uri=request.app.baseuri)
-    xml = filter.make_entity_xml()
+
+    filter = Filter(params=params)
+    xml = filter.make_entity_xml(db=request.app.db, entity_type=entity_type, base_uri=request.app.baseuri)
 
     return Response(content=xml)
 
@@ -291,9 +288,9 @@ def get_processtypes(request: Request):
     entity_type = {'sing': 'processtype', 'plur': 'processtypes'}
 
     params = request.query_params.multi_items()
-    test_path = f"{request.app.file_path}/{entity_type['plur']}/"
-    filter = Filter(file_path=test_path, params=params, entity_type=entity_type, base_uri=request.app.baseuri)
-    xml = filter.make_entity_xml()
+
+    filter = Filter(params=params)
+    xml = filter.make_entity_xml(db=request.app.db, entity_type=entity_type, base_uri=request.app.baseuri)
 
     return Response(content=xml)
 
@@ -318,9 +315,9 @@ def get_projects(request: Request):
     entity_type = {'sing': 'project', 'plur': 'projects'}
 
     params = request.query_params.multi_items()
-    test_path = f"{request.app.file_path}/{entity_type['plur']}/"
-    filter = Filter(file_path=test_path, params=params, entity_type=entity_type, base_uri=request.app.baseuri)
-    xml = filter.make_entity_xml()
+
+    filter = Filter(params=params)
+    xml = filter.make_entity_xml(db=request.app.db, entity_type=entity_type, base_uri=request.app.baseuri)
 
     return Response(content=xml)
 
@@ -345,9 +342,9 @@ def get_reagentkits(request: Request):
     entity_type = {'sing': 'reagentkit', 'plur': 'reagentkits'}
 
     params = request.query_params.multi_items()
-    test_path = f"{request.app.file_path}/{entity_type['plur']}/"
-    filter = Filter(file_path=test_path, params=params, entity_type=entity_type, base_uri=request.app.baseuri)
-    xml = filter.make_entity_xml()
+
+    filter = Filter(params=params)
+    xml = filter.make_entity_xml(db=request.app.db, entity_type=entity_type, base_uri=request.app.baseuri)
 
     return Response(content=xml)
 
@@ -372,9 +369,9 @@ def get_reagentlots(request: Request):
     entity_type = {'sing': 'reagentlot', 'plur': 'reagentlots'}
 
     params = request.query_params.multi_items()
-    test_path = f"{request.app.file_path}/{entity_type['plur']}/"
-    filter = Filter(file_path=test_path, params=params, entity_type=entity_type, base_uri=request.app.baseuri)
-    xml = filter.make_entity_xml()
+
+    filter = Filter(params=params)
+    xml = filter.make_entity_xml(db=request.app.db, entity_type=entity_type, base_uri=request.app.baseuri)
 
     return Response(content=xml)
 
@@ -399,9 +396,9 @@ def get_reagenttypes(request: Request):
     entity_type = {'sing': 'reagenttype', 'plur': 'reagenttypes'}
 
     params = request.query_params.multi_items()
-    test_path = f"{request.app.file_path}/{entity_type['plur']}/"
-    filter = Filter(file_path=test_path, params=params, entity_type=entity_type, base_uri=request.app.baseuri)
-    xml = filter.make_entity_xml()
+
+    filter = Filter(params=params)
+    xml = filter.make_entity_xml(db=request.app.db, entity_type=entity_type, base_uri=request.app.baseuri)
 
     return Response(content=xml)
 
@@ -426,9 +423,9 @@ def get_researchers(request: Request):
     entity_type = {'sing': 'researcher', 'plur': 'researchers'}
 
     params = request.query_params.multi_items()
-    test_path = f"{request.app.file_path}/{entity_type['plur']}/"
-    filter = Filter(file_path=test_path, params=params, entity_type=entity_type, base_uri=request.app.baseuri)
-    xml = filter.make_entity_xml()
+
+    filter = Filter(params=params)
+    xml = filter.make_entity_xml(db=request.app.db, entity_type=entity_type, base_uri=request.app.baseuri)
 
     return Response(content=xml)
 
@@ -453,9 +450,9 @@ def get_roles(request: Request):
     entity_type = {'sing': 'role', 'plur': 'roles'}
 
     params = request.query_params.multi_items()
-    test_path = f"{request.app.file_path}/{entity_type['plur']}/"
-    filter = Filter(file_path=test_path, params=params, entity_type=entity_type, base_uri=request.app.baseuri)
-    xml = filter.make_entity_xml()
+
+    filter = Filter(params=params)
+    xml = filter.make_entity_xml(db=request.app.db, entity_type=entity_type, base_uri=request.app.baseuri)
 
     return Response(content=xml)
 
@@ -480,9 +477,9 @@ def get_artifacts(request: Request):
     entity_type = {'sing': 'artifact', 'plur': 'artifacts'}
 
     params = request.query_params.multi_items()
-    test_path = f"{request.app.file_path}/{entity_type['plur']}/"
-    filter = Filter(file_path=test_path, params=params, entity_type=entity_type, base_uri=request.app.baseuri)
-    xml = filter.make_entity_xml()
+
+    filter = Filter(params=params)
+    xml = filter.make_entity_xml(db=request.app.db, entity_type=entity_type, base_uri=request.app.baseuri)
 
     return Response(content=xml)
 
@@ -507,9 +504,9 @@ def get_artifactgroups(request: Request):
     entity_type = {'sing': 'artifactgroup', 'plur': 'artifactgroups'}
 
     params = request.query_params.multi_items()
-    test_path = f"{request.app.file_path}/{entity_type['plur']}/"
-    filter = Filter(file_path=test_path, params=params, entity_type=entity_type, base_uri=request.app.baseuri)
-    xml = filter.make_entity_xml()
+
+    filter = Filter(params=params)
+    xml = filter.make_entity_xml(db=request.app.db, entity_type=entity_type, base_uri=request.app.baseuri)
 
     return Response(content=xml)
 
@@ -534,9 +531,9 @@ def get_automations(request: Request):
     entity_type = {'sing': 'automation', 'plur': 'automations'}
 
     params = request.query_params.multi_items()
-    test_path = f"{request.app.file_path}/{entity_type['plur']}/"
-    filter = Filter(file_path=test_path, params=params, entity_type=entity_type, base_uri=request.app.baseuri)
-    xml = filter.make_entity_xml()
+
+    filter = Filter(params=params)
+    xml = filter.make_entity_xml(db=request.app.db, entity_type=entity_type, base_uri=request.app.baseuri)
 
     return Response(content=xml)
 
@@ -561,9 +558,9 @@ def get_protocols(request: Request):
     entity_type = {'sing': 'protocol', 'plur': 'protocols'}
 
     params = request.query_params.multi_items()
-    test_path = f"{request.app.file_path}/{entity_type['plur']}/"
-    filter = Filter(file_path=test_path, params=params, entity_type=entity_type, base_uri=request.app.baseuri)
-    xml = filter.make_entity_xml()
+
+    filter = Filter(params=params)
+    xml = filter.make_entity_xml(db=request.app.db, entity_type=entity_type, base_uri=request.app.baseuri)
 
     return Response(content=xml)
 
@@ -588,9 +585,9 @@ def get_udfs(request: Request):
     entity_type = {'sing': 'udf', 'plur': 'udfs'}
 
     params = request.query_params.multi_items()
-    test_path = f"{request.app.file_path}/{entity_type['plur']}/"
-    filter = Filter(file_path=test_path, params=params, entity_type=entity_type, base_uri=request.app.baseuri)
-    xml = filter.make_entity_xml()
+
+    filter = Filter(params=params)
+    xml = filter.make_entity_xml(db=request.app.db, entity_type=entity_type, base_uri=request.app.baseuri)
 
     return Response(content=xml)
 
@@ -615,9 +612,9 @@ def get_udts(request: Request):
     entity_type = {'sing': 'udt', 'plur': 'udts'}
 
     params = request.query_params.multi_items()
-    test_path = f"{request.app.file_path}/{entity_type['plur']}/"
-    filter = Filter(file_path=test_path, params=params, entity_type=entity_type, base_uri=request.app.baseuri)
-    xml = filter.make_entity_xml()
+
+    filter = Filter(params=params)
+    xml = filter.make_entity_xml(db=request.app.db, entity_type=entity_type, base_uri=request.app.baseuri)
 
     return Response(content=xml)
 
@@ -642,9 +639,9 @@ def get_workflows(request: Request):
     entity_type = {'sing': 'workflow', 'plur': 'workflows'}
 
     params = request.query_params.multi_items()
-    test_path = f"{request.app.file_path}/{entity_type['plur']}/"
-    filter = Filter(file_path=test_path, params=params, entity_type=entity_type, base_uri=request.app.baseuri)
-    xml = filter.make_entity_xml()
+
+    filter = Filter(params=params)
+    xml = filter.make_entity_xml(db=request.app.db, entity_type=entity_type, base_uri=request.app.baseuri)
 
     return Response(content=xml)
 

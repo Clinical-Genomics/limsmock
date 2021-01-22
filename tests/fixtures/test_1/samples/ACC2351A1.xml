@@ -1,12 +1,12 @@
-<smp:sample xmlns:udf="http://genologics.com/ri/userdefined" xmlns:ri="http://genologics.com/ri" xmlns:file="http://genologics.com/ri/file" xmlns:smp="http://genologics.com/ri/sample" uri="https://clinical-lims-stage.scilifelab.se/api/v2/samples/ACC2351A1" limsid="ACC2351A1">
+<smp:sample xmlns:udf="http://genologics.com/ri/userdefined" xmlns:ri="http://genologics.com/ri" xmlns:file="http://genologics.com/ri/file" xmlns:smp="http://genologics.com/ri/sample" uri="http://127.0.0.1:8000/api/v2/samples/ACC2351A1" limsid="ACC2351A1">
 <name>2016-02293</name>
 <date-received>2017-02-16</date-received>
-<project limsid="ACC2351" uri="https://clinical-lims-stage.scilifelab.se/api/v2/projects/ACC2351"/>
-<submitter uri="https://clinical-lims-stage.scilifelab.se/api/v2/researchers/3">
+<project limsid="ACC2351" uri="http://127.0.0.1:8000/api/v2/projects/ACC2351"/>
+<submitter uri="http://127.0.0.1:8000/api/v2/researchers/3">
 <first-name>API</first-name>
 <last-name>Access</last-name>
 </submitter>
-<artifact limsid="ACC2351A1PA1" uri="https://clinical-lims-stage.scilifelab.se/api/v2/artifacts/ACC2351A1PA1?state=55264"/>
+<artifact limsid="ACC2351A1PA1" uri="http://127.0.0.1:8000/api/v2/artifacts/ACC2351A1PA1?state=55264"/>
 <udf:field type="Boolean" name="Sample Delivered">true</udf:field>
 <udf:field type="String" name="Concentration (nM)">NA</udf:field>
 <udf:field type="String" name="customer">cust002</udf:field>
