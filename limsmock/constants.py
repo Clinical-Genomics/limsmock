@@ -1,3 +1,26 @@
-ENTITIES=[
-
+ENTITIES = [
+    "artifactgroups",
+    "artifacts",
+    "automations",
+    "protocols",
+    "udfs",
+    "udts",
+    "workflows",
+    "containers",
+    "containertypes",
+    "controltypes",
+    "files",
+    "instruments",
+    "labs",
+    "permissions",
+    "processes",
+    "processtemplates",
+    "processtypes",
+    "projects",
+    "reagentkits",
+    "reagentlots",
+    "reagenttypes",
+    "researchers",
+    "roles",
+    "samples",
 ]
