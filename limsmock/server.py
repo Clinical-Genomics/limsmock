@@ -1,25 +1,16 @@
 import uvicorn
-from limsmock.server.filter import Filter
-from limsmock.constants import ENTITIES
+from limsmock.filter import Filter
 from fastapi import FastAPI, Response, Request
-from pathlib import Path
-
+from limsmock.store import build_db
 app = FastAPI()
 
-def build_db(file_path):
-    db = {}
-    for entity in ENTITIES:
-        entity_path = Path(f"{file_path}/{entity}")
-        db[entity] = {}
-        for file in entity_path.glob('*.xml'):
-            entity_id = file.stem
-            f = open(file, 'r')
-            db[entity][entity_id] = f.read()
-            f.close()
-    return db
 
 
-def run_server(file_path, host, port):
+
+
+def run_server(file_path: str, host: str, port: str) -> None:
+    """"""
+
     app.file_path = file_path
     app.db = build_db(file_path)
     app.baseuri = f'http://{host}:{port}'
@@ -48,7 +39,7 @@ def get_sample(enity_id, request: Request):
 @app.put("/api/v2/samples/{enity_id}")
 async def put_sample(enity_id, request: Request):
     body = await request.body()
-    
+
     request.app.db['samples'][enity_id] = body
     return Response(content=body)
 
@@ -75,7 +66,7 @@ def get_process(enity_id, request: Request):
 @app.put("/api/v2/processes/{enity_id}")
 async def put_process(enity_id, request: Request):
     body = await request.body()
-    
+
     request.app.db['processes'][enity_id] = body
     return Response(content=body)
 
@@ -102,7 +93,7 @@ def get_container(enity_id, request: Request):
 @app.put("/api/v2/containers/{enity_id}")
 async def put_container(enity_id, request: Request):
     body = await request.body()
-    
+
     request.app.db['containers'][enity_id] = body
     return Response(content=body)
 
@@ -129,7 +120,7 @@ def get_containertype(enity_id, request: Request):
 @app.put("/api/v2/containertypes/{enity_id}")
 async def put_containertype(enity_id, request: Request):
     body = await request.body()
-    
+
     request.app.db['containertypes'][enity_id] = body
     return Response(content=body)
 
@@ -156,7 +147,7 @@ def get_controltype(enity_id, request: Request):
 @app.put("/api/v2/controltypes/{enity_id}")
 async def put_controltype(enity_id, request: Request):
     body = await request.body()
-    
+
     request.app.db['controltypes'][enity_id] = body
     return Response(content=body)
 
@@ -183,7 +174,7 @@ def get_file(enity_id, request: Request):
 @app.put("/api/v2/files/{enity_id}")
 async def put_file(enity_id, request: Request):
     body = await request.body()
-    
+
     request.app.db['files'][enity_id] = body
     return Response(content=body)
 
@@ -210,7 +201,7 @@ def get_instrument(enity_id, request: Request):
 @app.put("/api/v2/instruments/{enity_id}")
 async def put_instrument(enity_id, request: Request):
     body = await request.body()
-    
+
     request.app.db['instruments'][enity_id] = body
     return Response(content=body)
 
@@ -237,7 +228,7 @@ def get_lab(enity_id, request: Request):
 @app.put("/api/v2/labs/{enity_id}")
 async def put_lab(enity_id, request: Request):
     body = await request.body()
-    
+
     request.app.db['labs'][enity_id] = body
     return Response(content=body)
 
@@ -264,7 +255,7 @@ def get_permission(enity_id, request: Request):
 @app.put("/api/v2/permissions/{enity_id}")
 async def put_permission(enity_id, request: Request):
     body = await request.body()
-    
+
     request.app.db['permissions'][enity_id] = body
     return Response(content=body)
 
@@ -291,7 +282,7 @@ def get_processtemplate(enity_id, request: Request):
 @app.put("/api/v2/processtemplates/{enity_id}")
 async def put_processtemplate(enity_id, request: Request):
     body = await request.body()
-    
+
     request.app.db['processtemplates'][enity_id] = body
     return Response(content=body)
 
@@ -318,7 +309,7 @@ def get_processtype(enity_id, request: Request):
 @app.put("/api/v2/processtypes/{enity_id}")
 async def put_processtype(enity_id, request: Request):
     body = await request.body()
-    
+
     request.app.db['processtypes'][enity_id] = body
     return Response(content=body)
 
@@ -345,7 +336,7 @@ def get_project(enity_id, request: Request):
 @app.put("/api/v2/projects/{enity_id}")
 async def put_project(enity_id, request: Request):
     body = await request.body()
-    
+
     request.app.db['projects'][enity_id] = body
     return Response(content=body)
 
@@ -372,7 +363,7 @@ def get_reagentkit(enity_id, request: Request):
 @app.put("/api/v2/reagentkits/{enity_id}")
 async def put_reagentkit(enity_id, request: Request):
     body = await request.body()
-    
+
     request.app.db['reagentkits'][enity_id] = body
     return Response(content=body)
 
@@ -399,7 +390,7 @@ def get_reagentlot(enity_id, request: Request):
 @app.put("/api/v2/reagentlots/{enity_id}")
 async def put_reagentlot(enity_id, request: Request):
     body = await request.body()
-    
+
     request.app.db['reagentlots'][enity_id] = body
     return Response(content=body)
 
@@ -426,7 +417,7 @@ def get_reagenttype(enity_id, request: Request):
 @app.put("/api/v2/reagenttypes/{enity_id}")
 async def put_reagenttype(enity_id, request: Request):
     body = await request.body()
-    
+
     request.app.db['reagenttypes'][enity_id] = body
     return Response(content=body)
 
@@ -453,7 +444,7 @@ def get_researcher(enity_id, request: Request):
 @app.put("/api/v2/researchers/{enity_id}")
 async def put_researcher(enity_id, request: Request):
     body = await request.body()
-    
+
     request.app.db['researchers'][enity_id] = body
     return Response(content=body)
 
@@ -480,7 +471,7 @@ def get_role(enity_id, request: Request):
 @app.put("/api/v2/roles/{enity_id}")
 async def put_role(enity_id, request: Request):
     body = await request.body()
-    
+
     request.app.db['roles'][enity_id] = body
     return Response(content=body)
 
@@ -507,7 +498,7 @@ def get_artifact(enity_id, request: Request):
 @app.put("/api/v2/artifacts/{enity_id}")
 async def put_artifact(enity_id, request: Request):
     body = await request.body()
-    
+
     request.app.db['artifacts'][enity_id] = body
     return Response(content=body)
 
@@ -534,7 +525,7 @@ def get_artifactgroup(enity_id, request: Request):
 @app.put("/api/v2/artifactgroups/{enity_id}")
 async def put_artifactgroup(enity_id, request: Request):
     body = await request.body()
-    
+
     request.app.db['artifactgroups'][enity_id] = body
     return Response(content=body)
 
@@ -561,7 +552,7 @@ def get_automation(enity_id, request: Request):
 @app.put("/api/v2/configuration/automations/{enity_id}")
 async def put_automation(enity_id, request: Request):
     body = await request.body()
-    
+
     request.app.db['automations'][enity_id] = body
     return Response(content=body)
 
@@ -588,7 +579,7 @@ def get_protocol(enity_id, request: Request):
 @app.put("/api/v2/configuration/protocols/{enity_id}")
 async def put_protocol(enity_id, request: Request):
     body = await request.body()
-    
+
     request.app.db['protocols'][enity_id] = body
     return Response(content=body)
 
@@ -615,7 +606,7 @@ def get_udf(enity_id, request: Request):
 @app.put("/api/v2/configuration/udfs/{enity_id}")
 async def put_udf(enity_id, request: Request):
     body = await request.body()
-    
+
     request.app.db['udfs'][enity_id] = body
     return Response(content=body)
 
@@ -642,7 +633,7 @@ def get_udt(enity_id, request: Request):
 @app.put("/api/v2/configuration/udts/{enity_id}")
 async def put_udt(enity_id, request: Request):
     body = await request.body()
-    
+
     request.app.db['udts'][enity_id] = body
     return Response(content=body)
 
@@ -669,6 +660,6 @@ def get_workflow(enity_id, request: Request):
 @app.put("/api/v2/configuration/workflows/{enity_id}")
 async def put_workflow(enity_id, request: Request):
     body = await request.body()
-    
+
     request.app.db['workflows'][enity_id] = body
     return Response(content=body)
