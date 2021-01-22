@@ -1,6 +1,7 @@
 from pathlib import Path
 import xml.etree.ElementTree as ET
 import requests
+from typing import List, Tuple
 
 
 class Filter:
@@ -13,10 +14,10 @@ class Filter:
         self.udf_tag = '{http://genologics.com/ri/userdefined}field'
         self.related_entity_tags = ['project', 'submitter', 'artifact', 'reagent-label']  # handlde these
 
-    def _parse(self, root):
+    def _parse(self, root: ET.Element) -> List[Tuple[str, str]]:
         """Parsing xml to prepare for filtering.
 
-        In need of shape up!!!!!!!!"""
+        Work In Progress!!!!!!!!"""
 
         parsed_xml = []
         for child in root.iter():
@@ -41,7 +42,7 @@ class Filter:
                 parsed_xml.append((child.tag, child.text))
         return parsed_xml
 
-    def _filter(self, root):
+    def _filter(self, root: ET.Element) -> bool:
         """Checking if the filtering parameters are a subset of the parsed xml."""
 
         parsed_xml = self._parse(root)
