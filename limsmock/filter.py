@@ -4,6 +4,8 @@ import requests
 
 
 class Filter:
+    """Class for filtering xmls based on passed params.
+    """
 
     # remaining is to handle unioon of combinations when many process types or inputs are given
     def __init__(self, params: list):
@@ -12,6 +14,10 @@ class Filter:
         self.related_entity_tags = ['project', 'submitter', 'artifact', 'reagent-label']  # handlde these
 
     def _parse(self, root):
+        """Parsing xml to prepare for filtering.
+
+        In need of shape up!!!!!!!!"""
+
         parsed_xml = []
         for child in root.iter():
             if child.tag == self.udf_tag:
@@ -36,13 +42,16 @@ class Filter:
         return parsed_xml
 
     def _filter(self, root):
+        """Checking if the filtering parameters are a subset of the parsed xml."""
+
         parsed_xml = self._parse(root)
         if set(self.params) <= set(parsed_xml):
             return True
         return False
 
     def make_entity_xml(self, entity_type: dict, base_uri: str, db: dict) -> str:
-        """Foramting the entity xml responce based existing enteties in the database.
+        """Formatting the entity xml response based existing entities in the database
+        filtered by the filtering params.
 
         Example of entity xml for artifacts:
 
