@@ -3,6 +3,13 @@ import xml.etree.ElementTree as ET
 import requests
 from typing import List, Tuple
 
+"""class ArtifactFilter(Filter):
+    def __init__(self):
+        super(Filter.__init__)
+        self.entity_type = {'sing': 'artifact', 'plur': 'artifacts'}
+
+    def filter(self, udf: Dict[str, str]):"""
+
 
 class Filter:
     """Class for filtering xmls based on passed params.

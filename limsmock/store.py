@@ -1,6 +1,8 @@
+import logging
 from pathlib import Path
 from limsmock.constants import ENTITIES
 
+LOG = logging.getLogger(__name__)
 
 def build_db(file_path: str) -> dict:
     """Building a database based on the files set up by the test in the <file_path>.
@@ -32,10 +34,13 @@ def build_db(file_path: str) -> dict:
     db = {}
     for entity in ENTITIES:
         entity_path = Path(f"{file_path}/{entity}")
+        LOG.info("Read file %s", entity_path)
+        print(entity_path.exists())
         db[entity] = {}
         for file in entity_path.glob('*.xml'):
             entity_id = file.stem
             f = open(file, 'r')
             db[entity][entity_id] = f.read()
             f.close()
+    print(db)
     return db
