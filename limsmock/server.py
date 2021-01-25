@@ -8,7 +8,27 @@ app = FastAPI()
 
 def run_server(file_path: str, host: str, port: str) -> None:
     """Starting up the server. This is the function that needs
-    to be imported and used in the server fixure for your test"""
+    to be imported and used in the server fixure for your test
+    
+    Args:
+        host: ..
+        port: ..
+        file_path: 
+            Path to the xmls of the specific test. 
+            Assumeds file structure:
+                <file_path>
+                    - <entity type>
+                        - <entiry_id>.xml
+                        
+            eg: 
+                <file_path>
+                    - samples
+                        - S1.xml
+                        - S2.xml
+                    - processes
+                        - P1.xml
+                        - P2.xml
+     """
 
     app.db = build_db(file_path)
     app.baseuri = f'http://{host}:{port}'
