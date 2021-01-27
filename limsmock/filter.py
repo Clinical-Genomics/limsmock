@@ -9,7 +9,7 @@ class Filter:
     """
 
     # remaining is to handle unioon of combinations when many process types or inputs are given
-    def __init__(self, params: list):
+    def __init__(self, params: List[str]):
         self.params = params
         self.udf_tag = '{http://genologics.com/ri/userdefined}field'
         self.related_entity_tags = ['project', 'submitter', 'artifact', 'reagent-label']  # handlde these
