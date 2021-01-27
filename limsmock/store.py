@@ -38,7 +38,6 @@ def build_db(file_path: str) -> dict:
         db[entity] = {}
         for file in entity_path.glob('*.xml'):
             entity_id = file.stem
-            f = open(file, 'r')
-            db[entity][entity_id] = f.read()
-            f.close()
+            with open(file, 'r') as f:
+                db[entity][entity_id] = f.read()
     return db
