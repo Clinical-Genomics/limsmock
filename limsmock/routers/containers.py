@@ -19,16 +19,16 @@ def get_containers(request: Request):
     return Response(content=xml)
 
 
-@router.get("/{enity_id}")
-def get_container(enity_id, request: Request):
+@router.get("/{entity_id}")
+def get_container(entity_id, request: Request):
     db = request.app.db
 
-    return Response(content=db['containers'].get(enity_id))
+    return Response(content=db['containers'].get(entity_id))
 
 
-@router.put("/{enity_id}")
-async def put_container(enity_id, request: Request):
+@router.put("/{entity_id}")
+async def put_container(entity_id, request: Request):
     body = await request.body()
 
-    request.app.db['containers'][enity_id] = body
+    request.app.db['containers'][entity_id] = body
     return Response(content=body)

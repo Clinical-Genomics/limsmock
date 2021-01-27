@@ -19,16 +19,16 @@ def get_udts(request: Request):
     return Response(content=xml)
 
 
-@router.get("/{enity_id}")
-def get_udt(enity_id, request: Request):
+@router.get("/{entity_id}")
+def get_udt(entity_id, request: Request):
     db = request.app.db
 
-    return Response(content=db['udts'].get(enity_id))
+    return Response(content=db['udts'].get(entity_id))
 
 
 @router.put("/")
-async def put_udt(enity_id, request: Request):
+async def put_udt(entity_id, request: Request):
     body = await request.body()
 
-    request.app.db['udts'][enity_id] = body
+    request.app.db['udts'][entity_id] = body
     return Response(content=body)

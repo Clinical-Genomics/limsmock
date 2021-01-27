@@ -19,16 +19,16 @@ def get_labs(request: Request):
     return Response(content=xml)
 
 
-@router.get("/{enity_id}")
-def get_lab(enity_id, request: Request):
+@router.get("/{entity_id}")
+def get_lab(entity_id, request: Request):
     db = request.app.db
 
-    return Response(content=db['labs'].get(enity_id))
+    return Response(content=db['labs'].get(entity_id))
 
 
-@router.put("/{enity_id}")
-async def put_lab(enity_id, request: Request):
+@router.put("/{entity_id}")
+async def put_lab(entity_id, request: Request):
     body = await request.body()
 
-    request.app.db['labs'][enity_id] = body
+    request.app.db['labs'][entity_id] = body
     return Response(content=body)

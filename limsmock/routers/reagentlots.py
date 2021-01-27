@@ -19,16 +19,16 @@ def get_reagentlots(request: Request):
     return Response(content=xml)
 
 
-@router.get("/{enity_id}")
-def get_reagentlot(enity_id, request: Request):
+@router.get("/{entity_id}")
+def get_reagentlot(entity_id, request: Request):
     db = request.app.db
 
-    return Response(content=db['reagentlots'].get(enity_id))
+    return Response(content=db['reagentlots'].get(entity_id))
 
 
-@router.put("/{enity_id}")
-async def put_reagentlot(enity_id, request: Request):
+@router.put("/{entity_id}")
+async def put_reagentlot(entity_id, request: Request):
     body = await request.body()
 
-    request.app.db['reagentlots'][enity_id] = body
+    request.app.db['reagentlots'][entity_id] = body
     return Response(content=body)

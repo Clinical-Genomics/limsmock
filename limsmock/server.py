@@ -88,7 +88,7 @@ app.include_router(
 
 app.include_router(
     automations.router,
-    prefix="/api/v2/automations",
+    prefix="/api/v2/configuration/automations",
     tags=["automations"],
     responses={status.HTTP_404_NOT_FOUND: {"description": "automation not found"}}
 )

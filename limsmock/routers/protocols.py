@@ -19,16 +19,16 @@ def get_protocols(request: Request):
     return Response(content=xml)
 
 
-@router.get("/{enity_id}")
-def get_protocol(enity_id, request: Request):
+@router.get("/{entity_id}")
+def get_protocol(entity_id, request: Request):
     db = request.app.db
 
-    return Response(content=db['protocols'].get(enity_id))
+    return Response(content=db['protocols'].get(entity_id))
 
 
-@router.put("/{enity_id}")
-async def put_protocol(enity_id, request: Request):
+@router.put("/{entity_id}")
+async def put_protocol(entity_id, request: Request):
     body = await request.body()
 
-    request.app.db['protocols'][enity_id] = body
+    request.app.db['protocols'][entity_id] = body
     return Response(content=body)

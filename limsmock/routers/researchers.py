@@ -19,16 +19,16 @@ def get_researchers(request: Request):
     return Response(content=xml)
 
 
-@router.get("/{enity_id}")
-def get_researcher(enity_id, request: Request):
+@router.get("/{entity_id}")
+def get_researcher(entity_id, request: Request):
     db = request.app.db
 
-    return Response(content=db['researchers'].get(enity_id))
+    return Response(content=db['researchers'].get(entity_id))
 
 
-@router.put("/{enity_id}")
-async def put_researcher(enity_id, request: Request):
+@router.put("/{entity_id}")
+async def put_researcher(entity_id, request: Request):
     body = await request.body()
 
-    request.app.db['researchers'][enity_id] = body
+    request.app.db['researchers'][entity_id] = body
     return Response(content=body)

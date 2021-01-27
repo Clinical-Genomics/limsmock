@@ -19,16 +19,16 @@ def get_processtemplates(request: Request):
     return Response(content=xml)
 
 
-@router.get("/{enity_id}")
-def get_processtemplate(enity_id, request: Request):
+@router.get("/{entity_id}")
+def get_processtemplate(entity_id, request: Request):
     db = request.app.db
 
-    return Response(content=db['processtemplates'].get(enity_id))
+    return Response(content=db['processtemplates'].get(entity_id))
 
 
-@router.put("/{enity_id}")
-async def put_processtemplate(enity_id, request: Request):
+@router.put("/{entity_id}")
+async def put_processtemplate(entity_id, request: Request):
     body = await request.body()
 
-    request.app.db['processtemplates'][enity_id] = body
+    request.app.db['processtemplates'][entity_id] = body
     return Response(content=body)

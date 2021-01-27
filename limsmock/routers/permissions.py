@@ -19,16 +19,16 @@ def get_permissions(request: Request):
     return Response(content=xml)
 
 
-@router.get("/{enity_id}")
-def get_permission(enity_id, request: Request):
+@router.get("/{entity_id}")
+def get_permission(entity_id, request: Request):
     db = request.app.db
 
-    return Response(content=db['permissions'].get(enity_id))
+    return Response(content=db['permissions'].get(entity_id))
 
 
-@router.put("/{enity_id}")
-async def put_permission(enity_id, request: Request):
+@router.put("/{entity_id}")
+async def put_permission(entity_id, request: Request):
     body = await request.body()
 
-    request.app.db['permissions'][enity_id] = body
+    request.app.db['permissions'][entity_id] = body
     return Response(content=body)

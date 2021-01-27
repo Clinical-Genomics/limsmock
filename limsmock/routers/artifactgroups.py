@@ -19,16 +19,16 @@ def get_artifactgroups(request: Request):
     return Response(content=xml)
 
 
-@router.get("/{enity_id}")
-def get_artifactgroup(enity_id, request: Request):
+@router.get("/{entity_id}")
+def get_artifactgroup(entity_id, request: Request):
     db = request.app.db
 
-    return Response(content=db['artifactgroups'].get(enity_id))
+    return Response(content=db['artifactgroups'].get(entity_id))
 
 
-@router.put("/{enity_id}")
-async def put_artifactgroup(enity_id, request: Request):
+@router.put("/{entity_id}")
+async def put_artifactgroup(entity_id, request: Request):
     body = await request.body()
 
-    request.app.db['artifactgroups'][enity_id] = body
+    request.app.db['artifactgroups'][entity_id] = body
     return Response(content=body)

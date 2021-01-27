@@ -19,16 +19,16 @@ def get_instruments(request: Request):
     return Response(content=xml)
 
 
-@router.get("/{enity_id}")
-def get_instrument(enity_id, request: Request):
+@router.get("/{entity_id}")
+def get_instrument(entity_id, request: Request):
     db = request.app.db
 
-    return Response(content=db['instruments'].get(enity_id))
+    return Response(content=db['instruments'].get(entity_id))
 
 
-@router.put("/{enity_id}")
-async def put_instrument(enity_id, request: Request):
+@router.put("/{entity_id}")
+async def put_instrument(entity_id, request: Request):
     body = await request.body()
 
-    request.app.db['instruments'][enity_id] = body
+    request.app.db['instruments'][entity_id] = body
     return Response(content=body)

@@ -19,16 +19,16 @@ def get_containertypes(request: Request):
     return Response(content=xml)
 
 
-@router.get("/{enity_id}")
-def get_containertype(enity_id, request: Request):
+@router.get("/{entity_id}")
+def get_containertype(entity_id, request: Request):
     db = request.app.db
 
-    return Response(content=db['containertypes'].get(enity_id))
+    return Response(content=db['containertypes'].get(entity_id))
 
 
-@router.put("/{enity_id}")
-async def put_containertype(enity_id, request: Request):
+@router.put("/{entity_id}")
+async def put_containertype(entity_id, request: Request):
     body = await request.body()
 
-    request.app.db['containertypes'][enity_id] = body
+    request.app.db['containertypes'][entity_id] = body
     return Response(content=body)

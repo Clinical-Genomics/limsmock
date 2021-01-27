@@ -1,3 +1,4 @@
+from fastapi.params import Depends
 from starlette.requests import Request
 from starlette.responses import Response
 
@@ -19,16 +20,16 @@ def get_workflows(request: Request):
     return Response(content=xml)
 
 
-@router.get("/{enity_id}")
-def get_workflow(enity_id, request: Request):
+@router.get("/{entity_id}")
+def get_workflow(entity_id, request: Request):
     db = request.app.db
 
-    return Response(content=db['workflows'].get(enity_id))
+    return Response(content=db['workflows'].get(entity_id))
 
 
-@router.put("/{enity_id}")
-async def put_workflow(enity_id, request: Request):
+@router.put("/{entity_id}")
+async def put_workflow(entity_id, request: Request):
     body = await request.body()
 
-    request.app.db['workflows'][enity_id] = body
+    request.app.db['workflows'][entity_id] = body
     return Response(content=body)

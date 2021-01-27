@@ -19,16 +19,16 @@ def get_automations(request: Request):
     return Response(content=xml)
 
 
-@router.get("/api/v2/configuration/automations/{enity_id}")
-def get_automation(enity_id, request: Request):
+@router.get("/{entity_id}")
+def get_automation(entity_id, request: Request):
     db = request.app.db
 
-    return Response(content=db['automations'].get(enity_id))
+    return Response(content=db['automations'].get(entity_id))
 
 
-@router.put("/api/v2/configuration/automations/{enity_id}")
-async def put_automation(enity_id, request: Request):
+@router.put("/{entity_id}")
+async def put_automation(entity_id, request: Request):
     body = await request.body()
 
-    request.app.db['automations'][enity_id] = body
+    request.app.db['automations'][entity_id] = body
     return Response(content=body)

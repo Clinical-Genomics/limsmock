@@ -19,16 +19,16 @@ def get_projects(request: Request):
     return Response(content=xml)
 
 
-@router.get("/{enity_id}")
-def get_project(enity_id, request: Request):
+@router.get("/{entity_id}")
+def get_project(entity_id, request: Request):
     db = request.app.db
 
-    return Response(content=db['projects'].get(enity_id))
+    return Response(content=db['projects'].get(entity_id))
 
 
-@router.put("/{enity_id}")
-async def put_project(enity_id, request: Request):
+@router.put("/{entity_id}")
+async def put_project(entity_id, request: Request):
     body = await request.body()
 
-    request.app.db['projects'][enity_id] = body
+    request.app.db['projects'][entity_id] = body
     return Response(content=body)

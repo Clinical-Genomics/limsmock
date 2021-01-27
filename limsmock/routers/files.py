@@ -19,16 +19,16 @@ def get_files(request: Request):
     return Response(content=xml)
 
 
-@router.get("/{enity_id}")
-def get_file(enity_id, request: Request):
+@router.get("/{entity_id}")
+def get_file(entity_id, request: Request):
     db = request.app.db
 
-    return Response(content=db['files'].get(enity_id))
+    return Response(content=db['files'].get(entity_id))
 
 
-@router.put("/{enity_id}")
-async def put_file(enity_id, request: Request):
+@router.put("/{entity_id}")
+async def put_file(entity_id, request: Request):
     body = await request.body()
 
-    request.app.db['files'][enity_id] = body
+    request.app.db['files'][entity_id] = body
     return Response(content=body)

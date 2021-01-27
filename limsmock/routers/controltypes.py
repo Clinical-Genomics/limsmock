@@ -19,16 +19,16 @@ def get_controltypes(request: Request):
     return Response(content=xml)
 
 
-@router.get("/{enity_id}")
-def get_controltype(enity_id, request: Request):
+@router.get("/{entity_id}")
+def get_controltype(entity_id, request: Request):
     db = request.app.db
 
-    return Response(content=db['controltypes'].get(enity_id))
+    return Response(content=db['controltypes'].get(entity_id))
 
 
-@router.put("/{enity_id}")
-async def put_controltype(enity_id, request: Request):
+@router.put("/{entity_id}")
+async def put_controltype(entity_id, request: Request):
     body = await request.body()
 
-    request.app.db['controltypes'][enity_id] = body
+    request.app.db['controltypes'][entity_id] = body
     return Response(content=body)

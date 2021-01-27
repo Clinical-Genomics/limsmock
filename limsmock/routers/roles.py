@@ -19,16 +19,16 @@ def get_roles(request: Request):
     return Response(content=xml)
 
 
-@router.get("/{enity_id}")
-def get_role(enity_id, request: Request):
+@router.get("/{entity_id}")
+def get_role(entity_id, request: Request):
     db = request.app.db
 
-    return Response(content=db['roles'].get(enity_id))
+    return Response(content=db['roles'].get(entity_id))
 
 
-@router.put("/{enity_id}")
-async def put_role(enity_id, request: Request):
+@router.put("/{entity_id}")
+async def put_role(entity_id, request: Request):
     body = await request.body()
 
-    request.app.db['roles'][enity_id] = body
+    request.app.db['roles'][entity_id] = body
     return Response(content=body)

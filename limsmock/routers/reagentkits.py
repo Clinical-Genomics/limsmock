@@ -19,16 +19,16 @@ def get_reagentkits(request: Request):
     return Response(content=xml)
 
 
-@router.get("/{enity_id}")
-def get_reagentkit(enity_id, request: Request):
+@router.get("/{entity_id}")
+def get_reagentkit(entity_id, request: Request):
     db = request.app.db
 
-    return Response(content=db['reagentkits'].get(enity_id))
+    return Response(content=db['reagentkits'].get(entity_id))
 
 
-@router.put("/{enity_id}")
-async def put_reagentkit(enity_id, request: Request):
+@router.put("/{entity_id}")
+async def put_reagentkit(entity_id, request: Request):
     body = await request.body()
 
-    request.app.db['reagentkits'][enity_id] = body
+    request.app.db['reagentkits'][entity_id] = body
     return Response(content=body)

@@ -19,16 +19,16 @@ def get_udfs(request: Request):
     return Response(content=xml)
 
 
-@router.get("/{enity_id}")
-def get_udf(enity_id, request: Request):
+@router.get("/{entity_id}")
+def get_udf(entity_id, request: Request):
     db = request.app.db
 
-    return Response(content=db['udfs'].get(enity_id))
+    return Response(content=db['udfs'].get(entity_id))
 
 
-@router.put("/{enity_id}")
-async def put_udf(enity_id, request: Request):
+@router.put("/{entity_id}")
+async def put_udf(entity_id, request: Request):
     body = await request.body()
 
-    request.app.db['udfs'][enity_id] = body
+    request.app.db['udfs'][entity_id] = body
     return Response(content=body)

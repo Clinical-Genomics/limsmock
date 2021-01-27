@@ -19,16 +19,16 @@ def get_processtypes(request: Request):
     return Response(content=xml)
 
 
-@router.get("/{enity_id}")
-def get_processtype(enity_id, request: Request):
+@router.get("/{entity_id}")
+def get_processtype(entity_id, request: Request):
     db = request.app.db
 
-    return Response(content=db['processtypes'].get(enity_id))
+    return Response(content=db['processtypes'].get(entity_id))
 
 
-@router.put("/{enity_id}")
-async def put_processtype(enity_id, request: Request):
+@router.put("/{entity_id}")
+async def put_processtype(entity_id, request: Request):
     body = await request.body()
 
-    request.app.db['processtypes'][enity_id] = body
+    request.app.db['processtypes'][entity_id] = body
     return Response(content=body)
