@@ -1,4 +1,4 @@
-# limsmock 
+# limsmock ![Latest Release](https://img.shields.io/github/v/release/clinical-genomics/limsmock)
 
 Clarity LIMS system mainly consist of a postgress database, a REST API and a web interface. 
 
